@@ -10,8 +10,17 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
+    "@nuxtjs/tailwindcss": "6.12.2",
+    "howler": "^2.2.4",
     "nuxt": "^3.14.1592",
     "vue": "latest",
+    "vue-iconsax": "^2.0.0",
     "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@types/howler": "^2.2.12",
+    "typescript": "^5.7.2",
+    "vue-tsc": "^2.1.10"
   }
 }
