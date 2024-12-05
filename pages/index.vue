@@ -98,7 +98,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Controls - Left Side -->
-      <div class="absolute bottom-10 left-10">
+      <div class="absolute bottom-10 md:left-10 left-1/2 md:translate-x-0 -translate-x-1/2">
         <div class="flex flex-col items-center space-y-6 float-animation">
           <button @click="togglePlay" 
                   :disabled="isLoading"
@@ -136,7 +136,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Keybindings - Right Side -->
-      <div class="absolute bottom-10 right-10">
+      <div class="hidden md:block absolute bottom-10 right-10">
         <div class="bg-lofi-dark/40 p-6 rounded-lg pixel-corners backdrop-blur-sm">
           <div class="font-space text-lofi-light space-y-3">
             <div class="flex items-center space-x-3">
