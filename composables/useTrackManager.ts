@@ -11,18 +11,31 @@ export function useTrackManager() {
   const isPlaying = ref(false);
   const isMuted = ref(false);
   const volume = ref(0.5);
-
-  const tracks: Track[] = [
-    { name: "Boba Tunnel", url: 'https://aac.saavncdn.com/097/b6f9b99f80d3a76d96af9e469f9bf0b8_160.mp4' },
-    { name: "Nilanjana I", url: 'https://aac.saavncdn.com/682/c2ce871e95e247b3349d381badcc84b4_sar_320.mp4' },
-    { name: "2441139", url: 'https://aac.saavncdn.com/658/dd4f52aeb63c80cebcce8fac843cce30_320.mp4' }
-  ];
+  const tracks = ref<Track[]>([]);
+  const isLoading = ref(false);
 
   let sound: Howl;
 
+  const fetchNextTrack = async () => {
+    try {
+      isLoading.value = true;
+      const response = await fetch('/api/songs');
+      const track = await response.json();
+      if (track) {
+        tracks.value.push(track);
+      }
+    } catch (error) {
+      console.error('Error fetching next track:', error);
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
   const initializeSound = () => {
+    if (tracks.value.length === 0) return;
+    
     sound = new Howl({
-      src: [tracks[currentTrackIndex.value].url],
+      src: [tracks.value[currentTrackIndex.value].url],
       loop: false,
       volume: volume.value,
       onend: () => {
@@ -31,59 +44,113 @@ export function useTrackManager() {
     });
   };
 
-  const togglePlay = () => {
+  const play = async () => {
+    if (tracks.value.length === 0) {
+      await fetchNextTrack();
+    }
+
     if (!sound) {
       initializeSound();
     }
-    
-    if (isPlaying.value) {
+
+    if (sound) {
+      sound.play();
+      isPlaying.value = true;
+    }
+  };
+
+  const pause = () => {
+    if (sound) {
       sound.pause();
+      isPlaying.value = false;
+    }
+  };
+
+  const nextTrack = async () => {
+    if (sound) {
+      sound.stop();
+    }
+
+    // Fetch next track if we're running low
+    if (currentTrackIndex.value >= tracks.value.length - 2) {
+      await fetchNextTrack();
+    }
+
+    if (currentTrackIndex.value < tracks.value.length - 1) {
+      currentTrackIndex.value++;
     } else {
+      currentTrackIndex.value = 0;
+    }
+
+    sound = new Howl({
+      src: [tracks.value[currentTrackIndex.value].url],
+      loop: false,
+      volume: volume.value,
+      onend: () => {
+        nextTrack();
+      }
+    });
+
+    if (isPlaying.value) {
       sound.play();
     }
-    isPlaying.value = !isPlaying.value;
+  };
+
+  const previousTrack = () => {
+    if (sound) {
+      sound.stop();
+    }
+
+    if (currentTrackIndex.value > 0) {
+      currentTrackIndex.value--;
+    } else {
+      currentTrackIndex.value = tracks.value.length - 1;
+    }
+
+    sound = new Howl({
+      src: [tracks.value[currentTrackIndex.value].url],
+      loop: false,
+      volume: volume.value,
+      onend: () => {
+        nextTrack();
+      }
+    });
+
+    if (isPlaying.value) {
+      sound.play();
+    }
   };
 
   const toggleMute = () => {
-    if (!sound) return;
-    
-    if (isMuted.value) {
-      sound.volume(volume.value);
-    } else {
-      sound.volume(0);
-    }
-    isMuted.value = !isMuted.value;
-  };
-
-  const nextTrack = () => {
     if (sound) {
-      sound.stop();
-      sound.unload();
-    }
-
-    currentTrackIndex.value = (currentTrackIndex.value + 1) % tracks.length;
-    initializeSound();
-    
-    if (isPlaying.value) {
-      sound.play();
+      isMuted.value = !isMuted.value;
+      sound.mute(isMuted.value);
     }
   };
 
-  const getCurrentTrack = () => tracks[currentTrackIndex.value];
-
-  const cleanup = () => {
+  const setVolume = (value: number) => {
+    volume.value = value;
     if (sound) {
-      sound.unload();
+      sound.volume(value);
     }
+  };
+
+  const getCurrentTrack = () => {
+    if (tracks.value.length === 0) return null;
+    return tracks.value[currentTrackIndex.value];
   };
 
   return {
     isPlaying,
     isMuted,
-    togglePlay,
-    toggleMute,
+    volume,
+    isLoading,
+    play,
+    pause,
     nextTrack,
-    getCurrentTrack,
-    cleanup
+    previousTrack,
+    toggleMute,
+    setVolume,
+    getCurrentTrack
   };
 }

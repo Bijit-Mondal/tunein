@@ -7,14 +7,21 @@ export default defineNuxtConfig({
     typeCheck: true
   },
 
+  css: ['~/assets/css/style.css'],
   modules: ['@nuxtjs/tailwindcss'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
 
   app: {
     head: {
       link: [
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap'
+          href: 'https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@300;400;500;600;700&display=swap'
         }
       ]
     }
