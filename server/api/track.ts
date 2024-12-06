@@ -102,7 +102,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = selectedQueries.join(' ');
-    const data = await $fetch<SearchResponse>(`https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}`);
+    const data = await $fetch<SearchResponse>(`https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}&limit=4`);
     return data;
   } catch (error) {
     console.error('Error fetching songs:', error);
