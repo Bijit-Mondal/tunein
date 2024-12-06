@@ -65,6 +65,7 @@ export interface SearchResponse {
 
 const queries = [
   'Anupam Roy',
+  'anindya chatterjee',
   'Arijit Singh Bengali',
   'Bengali Lofi',
   'Anjan Dutta',
@@ -72,14 +73,17 @@ const queries = [
   'Rabindranath Tagore Bengali',
   'Rabindranath Tagore Lofi',
   'baishe srabon', 
+  'Taalpatar',
+  'Bengali Folk',
   'Rupam Islam', 
   'Bengali', 
-  'Song', 
+  'Song',
+  'Bojhena Shey Bojhena',
   'baishe srabon',
   'Anupam Roy', 
   'Hasnuhana',
   'Nilanjana I',
-  'Nachiketa Chakraborty',
+  'Nachiketa Bengali',
   'Rabindranath Tagore',
 ];
 
@@ -98,7 +102,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const query = selectedQueries.join(' ');
-    const data = await $fetch<SearchResponse>(`https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}&limit=3`);
+    const data = await $fetch<SearchResponse>(`https://saavn.dev/api/search/songs?query=${encodeURIComponent(query)}`);
     return data;
   } catch (error) {
     console.error('Error fetching songs:', error);
