@@ -19,7 +19,7 @@ const gifs = [
   'https://i.giphy.com/iDvCzaRjNV61J5jtc0.webp',
   'https://bijit.xyz/cockpit-master/storage/uploads/2024/12/07/lofi79_uid_6753c0587705d.gif',
   'https://bijit.xyz/cockpit-master/storage/uploads/2024/12/07/lofi81_uid_6753c03b18301.gif',
-  'https://bijit.xyz/cockpit-master/storage/uploads/2024/12/07/lofi51_uid_6753bf80911ab.gif'
+  'https://bijit.xyz/cockpit-master/storage/uploads/2024/12/07/lofi51_uid_6753bf80911ab.gif',
   'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbHg5ZHhkemJmbDMwcGZ3MmRxMm5sY29nbTNrMXVpbHVhZXlmaGUyMCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/XbJYBCi69nyVOffLIU/giphy.webp',
   'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGhmanhtZzhrenRiNHJlMW5xYW9reWE5eWJtYmllYmZobGZ0M2ZtaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RMwgs5kZqkRyhF24KK/giphy.webp',
   'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHFiaml2MG92bXhuaWR2bHVycmlnNzUyeGI0OXZrMnF3MTI4ejhreCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/SrM826tgscTMzJpNFg/giphy.webp',
