@@ -167,4 +167,133 @@ onUnmounted(() => {
       </div>
     </div>
   </div>
+
+<div class="room-container">
+   <h2>Welcome to TuneIn Rooms</h2>
+    
+    <button @click="createRoom">Create Room</button>
+    
+    <input v-model="roomId" placeholder="Enter Room ID" />
+    <button @click="joinRoom">Join Room</button>
+
+    <p v-if="currentRoom">Connected to Room: {{ currentRoom }}</p>
+
+    <!-- Video/Audio elements for streaming -->
+    <video ref="myVideo" autoplay playsinline></video>
+    <video ref="peerVideo" autoplay playsinline></video>
+  </div>
 </template>
+
+<script>
+import Peer from 'peerjs';
+
+export default {
+  data() {
+    return {
+      peer: null,
+      conn: null,
+      roomId: '',
+      currentRoom: null,
+      myStream: null,
+    };
+  },
+  methods: {
+    async createRoom() {
+      // Generate a random Room ID
+      const newRoomId = Math.random().toString(36).substr(2, 9);
+      this.peer = new Peer(newRoomId, { host: 'your-server.com', port: 9000, path: '/myapp' });
+      this.currentRoom = newRoomId;
+      this.setupPeerEvents();
+    },
+    async joinRoom() {
+      if (!this.roomId) return alert("Please enter a Room ID!");
+
+      this.peer = new Peer({ host: 'your-server.com', port: 9000, path: '/myapp' });
+      this.currentRoom = this.roomId;
+
+      this.peer.on('open', () => {
+        this.conn = this.peer.connect(this.roomId);
+        this.conn.on('open', () => {
+          console.log("Connected to Room: ", this.roomId);
+        });
+      });
+
+      this.setupPeerEvents();
+    },
+    async setupPeerEvents() {
+      this.peer.on('connection', (conn) => {
+        conn.on('data', (data) => {
+          console.log("Received data:", data);
+        });
+      });
+
+      // Handle media stream
+      this.peer.on('call', (call) => {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+          call.answer(stream);
+          call.on('stream', (peerStream) => {
+            this.$refs.peerVideo.srcObject = peerStream;
+          });
+        });
+      });
+
+      // Get user media
+      this.myStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.$refs.myVideo.srcObject = this.myStream;
+    }
+  }
+};
+</script>
+
+<style>
+.room-container {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6); /* Dark overlay for readability */
+    border-radius: 10px;
+    width: 50%;
+    margin: 50px auto;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.2);
+}
+
+h2 {
+    color: #ff4d4d; /* Vibrant red like your 'tune in' text */
+    font-family: 'VT323', monospace;
+    font-size: 2rem;
+}
+
+button {
+    background: rgba(255, 77, 77, 0.8); /* Matching button style */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: rgba(255, 77, 77, 1);
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.8);
+}
+
+input {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 10px;
+    border: 2px solid #ff4d4d;
+    border-radius: 5px;
+    outline: none;
+    font-size: 16px;
+    margin: 10px;
+}
+
+video {
+    width: 40%;
+    border: 3px solid rgba(255, 77, 77, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+    margin: 20px;
+}
+</style>

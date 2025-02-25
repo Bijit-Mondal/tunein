@@ -28,8 +28,20 @@ export default defineNuxtConfig({
         {
           src: 'https://cdn.splitbee.io/sb.js',
           async: true
+        },
+        {
+          src: 'https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.1/peerjs.min.js', // ✅ Added PeerJS client
+          defer: true
         }
       ],
     }
+  },
+
+  runtimeConfig: {
+    public: {
+      peerServerHost: process.env.PEER_SERVER_HOST || 'your-server.com', // ✅ Define PeerJS host
+      peerServerPort: process.env.PEER_SERVER_PORT || 9000, // ✅ Define PeerJS port
+      peerServerPath: process.env.PEER_SERVER_PATH || '/myapp', // ✅ Define PeerJS path
+    }
   }
-})
+});
